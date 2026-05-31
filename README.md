@@ -64,15 +64,23 @@ Snowflake を DWH / ガバナンス基盤、Databricks を ML 加工 / 実験基
 
 ## コマンド
 
-`Makefile` はまだひな形であり、以下は将来の反映先である。
+最小の Python CLI は実装済み。
 
 ```bash
-make setup
-make build
-make run
-make test
+make install
+make snowflake-test
+make snowflake-context
+make snowflake-sql-file SQL_FILE=src/sql/snowflake/foundation/01_example.sql
+make gcs-inspect BUCKET=<bucket> OBJECT=<path>
+make databricks-job-run JOB_ID=<id>
 make lint
 ```
+
+実体は以下。
+
+- `src/snowflake_sql.py` — Snowflake 接続確認と SQL 実行
+- `src/gcs_fixture_inspector.py` — GCS fixture 確認
+- `src/databricks_job_trigger.py` — Databricks Job 起動
 
 ## ドキュメント
 

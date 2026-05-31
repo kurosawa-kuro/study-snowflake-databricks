@@ -1,39 +1,37 @@
-.PHONY: setup build run dev test fmt lint clean
+.PHONY: install snowflake-test snowflake-context snowflake-sql-file gcs-inspect databricks-job-run test lint clean
 
-# Application
-APP_NAME := <your-project>
+PYTHON ?= python3
+VENV ?= .venv
+BIN := $(VENV)/bin
 
-# 初期セットアップ (依存取得・ビルド)
-setup: deps build
-	@echo "Setup complete."
+install:
+	$(PYTHON) -m venv $(VENV)
+	$(BIN)/pip install --upgrade pip
+	$(BIN)/pip install -e .
 
-deps:
-	@echo "TODO: 依存をインストール (例: npm install / cargo fetch / pip install -r requirements.txt)"
+snowflake-test:
+	$(BIN)/python -m src.snowflake_sql
 
-# ビルド
-build:
-	@echo "TODO: ビルドコマンドを記述"
+snowflake-context:
+	$(BIN)/python -m src.snowflake_sql --mode context
 
-# 実行
-run:
-	@echo "TODO: 実行コマンドを記述"
+snowflake-sql-file:
+	@test -n "$(SQL_FILE)" || (echo "Usage: make snowflake-sql-file SQL_FILE=path/to/file.sql" && exit 1)
+	$(BIN)/python -m src.snowflake_sql --sql-file "$(SQL_FILE)"
 
-# 開発 (ホットリロード)
-dev:
-	@echo "TODO: 開発サーバー / watch コマンドを記述"
+gcs-inspect:
+	@test -n "$(BUCKET)" || (echo "Usage: make gcs-inspect BUCKET=<bucket> OBJECT=<path> [OUTPUT=local-file]" && exit 1)
+	@test -n "$(OBJECT)" || (echo "Usage: make gcs-inspect BUCKET=<bucket> OBJECT=<path> [OUTPUT=local-file]" && exit 1)
+	$(BIN)/python -m src.gcs_fixture_inspector --bucket "$(BUCKET)" --object "$(OBJECT)" $(if $(OUTPUT),--output "$(OUTPUT)")
 
-# テスト
-test:
-	@echo "TODO: テストコマンドを記述"
+databricks-job-run:
+	@test -n "$(JOB_ID)" || (echo "Usage: make databricks-job-run JOB_ID=<id> [NOTEBOOK_PARAMS='{\"key\":\"value\"}']" && exit 1)
+	$(BIN)/python -m src.databricks_job_trigger --job-id "$(JOB_ID)" --notebook-params '$(or $(NOTEBOOK_PARAMS),{})'
 
-# 整形
-fmt:
-	@echo "TODO: フォーマッタを記述"
+test: lint
 
-# 静的解析
 lint:
-	@echo "TODO: リンタを記述"
+	$(BIN)/python -m py_compile src/*.py
 
-# クリーンアップ
 clean:
-	@echo "TODO: 成果物削除コマンドを記述"
+	rm -rf $(VENV) build dist *.egg-info

@@ -2,6 +2,16 @@
 
 本ディレクトリは、`study-snowflake-databricks` の実装置き場である。
 
+## すぐ使える Python
+
+`src/` 直下には、参考元を土台に本リポジトリ向けへ読み替えた最小 CLI を置いた。
+
+| ファイル | 役割 |
+|---|---|
+| `snowflake_sql.py` | Snowflake 接続確認、任意 SQL、SQL ファイル実行 |
+| `gcs_fixture_inspector.py` | GCS 上の入力 fixture 確認とローカルダウンロード |
+| `databricks_job_trigger.py` | Databricks Jobs API の `run-now` 実行 |
+
 ## 最初にコピーしたもの
 
 参考プロジェクト [`study-databricks-gcp-pipeline`](/home/ubuntu/repos/study-databricks-gcp-pipeline/README.md) から、最初の雛形として以下を持ち込んだ。

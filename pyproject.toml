@@ -1,0 +1,22 @@
+[project]
+name = "study-snowflake-databricks"
+version = "0.1.0"
+description = "Study repository for a GCS -> Snowflake -> dbt -> Databricks -> Snowflake pipeline."
+requires-python = ">=3.10"
+dependencies = [
+  "google-cloud-storage>=2.16",
+  "requests>=2.31",
+  "snowflake-connector-python>=3.10",
+]
+
+[project.scripts]
+snowflake-sql-test = "src.snowflake_sql:main"
+gcs-fixture-inspect = "src.gcs_fixture_inspector:main"
+databricks-job-trigger = "src.databricks_job_trigger:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["src"]
